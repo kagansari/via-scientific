@@ -1,0 +1,29 @@
+#bg-img {
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(100vh - 150px);
+
+  background-image: url("data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=="),
+    url("https://cdn-iajnp.nitrocdn.com/AxLOWXCCuwkEscbEpqXkrVYrmXRiRreX/assets/images/optimized/rev-40baf27/www.viascientific.com/wp-content/uploads/2023/01/Frame-1000001835.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#bg-img-mask {
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(100vh - 149px);
+
+  background-image: url("data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=="),
+    url("https://cdn-iajnp.nitrocdn.com/AxLOWXCCuwkEscbEpqXkrVYrmXRiRreX/assets/images/optimized/rev-40baf27/www.viascientific.com/wp-content/uploads/2023/01/mask-hero-1-1.svg");
+  background-position: bottom left;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
