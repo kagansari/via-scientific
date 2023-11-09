@@ -1,4 +1,5 @@
 import SearchIcon from "@mui/icons-material/Search";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
   CircularProgress,
   Container,
@@ -6,11 +7,15 @@ import {
   Paper,
   Stack,
   TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 import logo from "../assets/logo.svg";
 import useDebounce from "../utils/useDebounce";
-import { useGeneExpressions } from "../utils/api";
+
+import { useGeneExpressions, useSeedSampleData } from "../utils/api";
 import GeneExpressionsTable from "./GeneExpressionsTable";
 
 export default function Content() {
@@ -26,20 +31,23 @@ export default function Content() {
       <Stack direction="row" justifyContent="space-between" py={2}>
         <img src={logo} alt="Via Scientific Logo" width={200} />
         <Paper sx={{ px: 3, py: 1, borderRadius: 3 }}>
-          <TextField
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            variant="standard"
-            label="Gene"
-            sx={{ minWidth: 250 }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
+          <Stack direction="row" alignItems="center" gap={8}>
+            <SeedDataButton />
+            <TextField
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              variant="standard"
+              label="Gene"
+              sx={{ minWidth: 250 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Stack>
         </Paper>
       </Stack>
       <Paper
@@ -65,3 +73,39 @@ export default function Content() {
     </Container>
   );
 }
+
+// ------------------------------------------------
+
+const SeedDataButton = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { mutate, isPending } = useSeedSampleData({
+    onSuccess: (data) => {
+      let message = `${data.insertedCount} items inserted`;
+      let variant: "success" | "error" = "success";
+      if (data.errorCount) {
+        message += `, ${data.errorCount} items failed`;
+        variant = "error";
+      }
+
+      enqueueSnackbar(<Typography variant="body1">{message}</Typography>, {
+        variant,
+      });
+    },
+  });
+
+  return (
+    <Tooltip
+      title="Read mock data samples_demo.tsv and import sample gene expressions to database"
+      placement="bottom"
+    >
+      <LoadingButton
+        variant="contained"
+        color="info"
+        onClick={() => mutate()}
+        loading={isPending}
+      >
+        Seed Data
+      </LoadingButton>
+    </Tooltip>
+  );
+};

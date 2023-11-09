@@ -1,4 +1,9 @@
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  useInfiniteQuery,
+  useMutation,
+  UseMutationOptions,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -36,6 +41,11 @@ export type GeneExpressionAnalysis = {
   control: GeneExpressionStatistics;
 };
 
+export type SeedDataResult = {
+  insertedCount: number;
+  errorCount: number;
+};
+
 const sleep = (ms = 1000) =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -50,13 +60,6 @@ const getGeneExpressions = async ({
   url.searchParams.append("search", search);
   url.searchParams.append("page", String(page));
   return axios.get(url.href).then((res) => res.data);
-};
-
-const analyzeGeneExpression = async (
-  gene: string
-): Promise<GeneExpressionAnalysis> => {
-  await sleep(1000);
-  return axios.get(`${API_URL}/analyze/${gene}`).then((res) => res.data);
 };
 
 export const useGeneExpressions = ({ search = "" }) => {
@@ -79,6 +82,12 @@ export const useGeneExpressions = ({ search = "" }) => {
   };
 };
 
+const analyzeGeneExpression = async (
+  gene: string
+): Promise<GeneExpressionAnalysis> => {
+  await sleep(1000);
+  return axios.get(`${API_URL}/analyze/${gene}`).then((res) => res.data);
+};
 export const useGeneExpressionAnalysis = (gene: string) => {
   const query = useQuery({
     queryKey: ["geneAnalysis", gene],
@@ -86,4 +95,18 @@ export const useGeneExpressionAnalysis = (gene: string) => {
   });
 
   return query;
+};
+
+const seedSampleData = async (): Promise<SeedDataResult> => {
+  return axios.post(`${API_URL}/seed`).then((res) => res.data);
+};
+export const useSeedSampleData = (
+  options?: UseMutationOptions<SeedDataResult>
+) => {
+  const mutation = useMutation<SeedDataResult>({
+    mutationFn: () => seedSampleData(),
+    ...options,
+  });
+
+  return mutation;
 };
