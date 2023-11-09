@@ -65,7 +65,6 @@ export const useGeneExpressions = ({ search = "" }) => {
     queryFn: ({ pageParam }) => getGeneExpressions({ page: pageParam, search }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      console.log("lastPage", lastPage);
       if (lastPage.page * 100 < lastPage.total) {
         return Number(lastPage.page) + 1;
       }

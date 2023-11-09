@@ -5,9 +5,10 @@ import { GeneExpression } from "./gene-expression.model";
 
 @Module({
   imports: [
-    TypegooseModule.forRoot("mongodb://localhost:27017/via-scientific", {
-      //   useNewUrlParser: true,
-    }),
+    TypegooseModule.forRoot(
+      process.env.MONGO_URL || "mongodb://localhost:27017/via-scientific",
+      {},
+    ),
     TypegooseModule.forFeature([
       {
         typegooseClass: GeneExpression,

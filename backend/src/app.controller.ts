@@ -183,7 +183,6 @@ export class AppController {
     @Query("search") search: string,
     @Query("page") page: number,
   ): Promise<GeneExpressionsQueryResult> {
-    console.log("TODO search", search);
     const query = search
       ? {
           gene: new RegExp(`^${search}`),
