@@ -42,14 +42,6 @@ function calculateVariance(values: number[]) {
   return sumOfSquaredDifferences / values.length;
 }
 
-// function calculateVariance(values: number[]) {
-//   const n = values.length;
-//   const mean = values.reduce((a, b) => a + b) / n;
-//   return Math.sqrt(
-//     values.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n,
-//   );
-// }
-
 export type GeneExpressionsQueryResult = {
   items: GeneExpression[];
   total: number;
@@ -132,7 +124,9 @@ export class AppController {
 
             result.insertedCount += rows.length;
           } catch (error) {
-            console.error(error);
+            console.error(
+              `${error.result?.result?.writeErrors?.length} errors while inserting documents`,
+            );
             result.insertedCount += error.result?.insertedCount;
             result.errorCount += error.result?.result?.writeErrors?.length;
           }

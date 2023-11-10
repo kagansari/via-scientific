@@ -48,7 +48,7 @@ const GeneExpressionsTable = ({
   const sx = { top: 37 }; // https://github.com/mui/material-ui/issues/23090
   return (
     <TableContainer
-      sx={{ maxHeight: "calc(100vh - 200px)" }}
+      sx={{ maxHeight: "calc(100vh - 220px)" }}
       ref={scrollContainerRef}
     >
       <Table

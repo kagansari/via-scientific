@@ -1,7 +1,7 @@
 import { ThemeProvider, createTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SnackbarProvider } from "notistack";
-import Content from "./components/Content";
+import GeneExpressions from "./components/GeneExpressions";
 
 const client = new QueryClient();
 
@@ -20,7 +20,7 @@ function App() {
         <SnackbarProvider
           anchorOrigin={{ horizontal: "left", vertical: "top" }}
         >
-          <Content />
+          <GeneExpressions />
           <div id="bg-img"></div>
           <div id="bg-img-mask"></div>
         </SnackbarProvider>

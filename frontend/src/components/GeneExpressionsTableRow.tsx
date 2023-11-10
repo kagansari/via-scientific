@@ -19,6 +19,8 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { GeneExpression, useGeneExpressionAnalysis } from "../utils/api";
 
+const nf = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 });
+
 type GeneExpressionsTableRowProps = {
   row: GeneExpression;
 };
@@ -41,13 +43,25 @@ const GeneExpressionsTableRow = ({ row }: GeneExpressionsTableRowProps) => {
             <span>{row.sampleNames.join(", ")}</span>
           </Tooltip>
         </TableCell>
-        <TableCell align="right">{row.expressionValues.experRep1}</TableCell>
-        <TableCell align="right">{row.expressionValues.experRep2}</TableCell>
-        <TableCell align="right">{row.expressionValues.experRep3}</TableCell>
+        <TableCell align="right">
+          {nf.format(row.expressionValues.experRep1)}
+        </TableCell>
+        <TableCell align="right">
+          {nf.format(row.expressionValues.experRep2)}
+        </TableCell>
+        <TableCell align="right">
+          {nf.format(row.expressionValues.experRep3)}
+        </TableCell>
         <TableCell align="right" />
-        <TableCell align="right">{row.expressionValues.controlRep1}</TableCell>
-        <TableCell align="right">{row.expressionValues.controlRep2}</TableCell>
-        <TableCell align="right">{row.expressionValues.controlRep3}</TableCell>
+        <TableCell align="right">
+          {nf.format(row.expressionValues.controlRep1)}
+        </TableCell>
+        <TableCell align="right">
+          {nf.format(row.expressionValues.controlRep2)}
+        </TableCell>
+        <TableCell align="right">
+          {nf.format(row.expressionValues.controlRep3)}
+        </TableCell>
         <TableCell align="right">
           <Button
             variant="text"
@@ -88,44 +102,68 @@ const GeneExpressionAnalysisContent = ({
   }
 
   return (
-    <Stack direction="row" pr={14}>
-      <GeneExpressionChart row={row} />
-      <Table>
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Table sx={{ maxWidth: 460 }} size="small">
         <TableHead>
           <TableRow>
-            <TableCell />
-            <TableCell align="center" width={275}>
+            <TableCell align="right" colSpan={2}>
               Experiment Analysis
             </TableCell>
-            <TableCell align="center" width={275}>
+            <TableCell width={3} sx={{ border: 0 }} />
+            <TableCell align="right" colSpan={2}>
               Control Analysis
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
-            <TableCell align="right">
-              <b>Mean</b>
+          <TableRow sx={{ "& td": { border: 0 } }}>
+            <TableCell align="right" variant="footer">
+              Mean:
             </TableCell>
-            <TableCell align="center">{data?.exper.mean}</TableCell>
-            <TableCell align="center">{data?.control.mean}</TableCell>
+            <TableCell align="right" variant="head">
+              {nf.format(data?.exper.mean ?? 0)}
+            </TableCell>
+            <TableCell />
+            <TableCell align="right" variant="footer">
+              Mean:
+            </TableCell>
+            <TableCell align="right" variant="head">
+              {nf.format(data?.control.mean ?? 0)}
+            </TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell align="right">
-              <b>Median</b>
+          <TableRow sx={{ "& td": { border: 0 } }}>
+            <TableCell align="right" variant="footer">
+              Median:
             </TableCell>
-            <TableCell align="center">{data?.exper.median}</TableCell>
-            <TableCell align="center">{data?.control.median}</TableCell>
+            <TableCell align="right" variant="head">
+              {nf.format(data?.exper.median ?? 0)}
+            </TableCell>
+            <TableCell />
+            <TableCell align="right" variant="footer">
+              Median:
+            </TableCell>
+            <TableCell align="right" variant="head">
+              {nf.format(data?.control.median ?? 0)}
+            </TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell align="right">
-              <b>Variance</b>
+          <TableRow sx={{ "& td": { border: 0 } }}>
+            <TableCell align="right" variant="footer">
+              Variance:
             </TableCell>
-            <TableCell align="center">{data?.exper.variance}</TableCell>
-            <TableCell align="center">{data?.control.variance}</TableCell>
+            <TableCell align="right" variant="head">
+              {nf.format(data?.exper.variance ?? 0)}
+            </TableCell>
+            <TableCell />
+            <TableCell align="right" variant="footer">
+              Variance:
+            </TableCell>
+            <TableCell align="right" variant="head">
+              {nf.format(data?.control.variance ?? 0)}
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>
+      <GeneExpressionChart row={row} />
     </Stack>
   );
 };
@@ -255,7 +293,7 @@ const GeneExpressionChart = ({ row }: GeneExpressionsTableRowProps) => {
   return (
     <div
       id={`chart-${row.gene}`}
-      style={{ width: "100%", height: "240px" }}
+      style={{ width: "500px", height: "240px" }}
     ></div>
   );
 };
