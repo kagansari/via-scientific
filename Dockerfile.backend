@@ -1,0 +1,18 @@
+FROM node:18-alpine
+
+RUN npm install -g pnpm
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+ENV NODE_ENV production
+COPY . .
+
+RUN pnpm install
+
+RUN pnpm run --filter=via-scientific-backend -r build
+
+EXPOSE 3000
+CMD [ "node", "backend/dist/main.js" ]

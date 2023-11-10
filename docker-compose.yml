@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  backend:
+    image: via-scientific-backend:0.0.1
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      MONGO_URL: mongodb://mongo:27017/via-scientific
+
+  frontend:
+    image: via-scientific-frontend:0.0.1
+    ports:
+      - 3001:3001
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
