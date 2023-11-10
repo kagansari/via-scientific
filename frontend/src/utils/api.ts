@@ -47,20 +47,17 @@ export type SeedDataResult = {
   errorCount: number;
 };
 
-const sleep = (ms = 1000) =>
-  new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
+// const sleep = (ms = 1000) =>
+//   new Promise((resolve) => {
+//     setTimeout(resolve, ms);
+//   });
 
 const getGeneExpressions = async ({
   page = 1,
   search = "",
 }): Promise<GeneExpressionsQueryResult> => {
-  await sleep(1000);
-  const url = new URL(`/list`, API_URL);
-  url.searchParams.append("search", search);
-  url.searchParams.append("page", String(page));
-  return axios.get(url.href).then((res) => res.data);
+  const url = `${API_URL}/list?search=${search}&page=${page}`;
+  return axios.get(url).then((res) => res.data);
 };
 
 export const useGeneExpressions = ({ search = "" }) => {
@@ -86,7 +83,6 @@ export const useGeneExpressions = ({ search = "" }) => {
 const analyzeGeneExpression = async (
   gene: string
 ): Promise<GeneExpressionAnalysis> => {
-  await sleep(1000);
   return axios.get(`${API_URL}/analyze/${gene}`).then((res) => res.data);
 };
 export const useGeneExpressionAnalysis = (gene: string) => {
