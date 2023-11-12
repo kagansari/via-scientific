@@ -3,11 +3,15 @@ import {
   useInfiniteQuery,
   useMutation,
   UseMutationOptions,
+  UseQueryOptions,
 } from "@tanstack/react-query";
 import axios from "axios";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://demo.kagansari.com/api";
+
+const ML_API_URL =
+  import.meta.env.VITE_ML_API_URL || "https://demo.kagansari.com/api";
 
 export class GeneExpressionValues {
   experRep1!: number;
@@ -22,6 +26,7 @@ export class GeneExpression {
   gene!: string;
   sampleNames!: string[];
   expressionValues!: GeneExpressionValues;
+  score?: number;
 }
 
 export type GeneExpressionsQueryResult = {
@@ -47,11 +52,6 @@ export type SeedDataResult = {
   errorCount: number;
 };
 
-// const sleep = (ms = 1000) =>
-//   new Promise((resolve) => {
-//     setTimeout(resolve, ms);
-//   });
-
 const getGeneExpressions = async ({
   page = 1,
   search = "",
@@ -59,7 +59,6 @@ const getGeneExpressions = async ({
   const url = `${API_URL}/list?search=${search}&page=${page}`;
   return axios.get(url).then((res) => res.data);
 };
-
 export const useGeneExpressions = ({ search = "" }) => {
   const infiniteQuery = useInfiniteQuery({
     queryKey: ["geneExpressions", search],
@@ -75,8 +74,6 @@ export const useGeneExpressions = ({ search = "" }) => {
 
   return {
     ...infiniteQuery,
-    geneExpressions:
-      infiniteQuery.data?.pages.flatMap(({ items }) => items) || [],
   };
 };
 
@@ -106,4 +103,21 @@ export const useSeedSampleData = (
   });
 
   return mutation;
+};
+
+const getAnomalyDetection = async (): Promise<GeneExpression[]> => {
+  const url = `${ML_API_URL}/anomaly-detection`;
+  return axios.get(url).then((res) => res.data);
+};
+export const useAnomalyDetection = (
+  options?: Partial<UseQueryOptions<GeneExpression[]>>
+) => {
+  const query = useQuery({
+    queryKey: ["anomalyDetection"],
+    queryFn: () => getAnomalyDetection(),
+
+    ...options,
+  });
+
+  return query;
 };

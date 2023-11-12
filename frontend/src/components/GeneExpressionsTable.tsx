@@ -10,29 +10,34 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useRef } from "react";
-import { GeneExpression, useGeneExpressions } from "../utils/api";
+import { GeneExpression } from "../utils/api";
 import GeneExpressionsTableRow from "./GeneExpressionsTableRow";
 
 type GeneExpressionsTableProps = {
   rows: GeneExpression[];
-  geneExpressionsQuery: ReturnType<typeof useGeneExpressions>;
+  activeTab: "all" | "anomaly";
+  showingItemCount: number;
+  totalItemCount: number;
+  onScrollEnd: () => void;
+  isLoading?: boolean;
 };
 const GeneExpressionsTable = ({
   rows,
-  geneExpressionsQuery,
+  showingItemCount,
+  totalItemCount,
+  onScrollEnd,
+  isLoading,
+  activeTab,
 }: GeneExpressionsTableProps) => {
-  const { isFetching, fetchNextPage, data, geneExpressions } =
-    geneExpressionsQuery;
-
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollingEl = scrollContainerRef.current;
-      if (scrollingEl && !isFetching) {
+      if (scrollingEl && !isLoading) {
         const { offsetHeight, scrollTop, scrollHeight } = scrollingEl;
         if (offsetHeight + scrollTop >= scrollHeight) {
-          fetchNextPage();
+          onScrollEnd();
         }
         return;
       }
@@ -41,10 +46,8 @@ const GeneExpressionsTable = ({
     const scrollingEl = scrollContainerRef.current;
     scrollingEl?.addEventListener("scroll", handleScroll);
     return () => scrollingEl?.removeEventListener("scroll", handleScroll);
-  }, [isFetching, fetchNextPage]);
+  }, [isLoading, onScrollEnd]);
 
-  const totalItemCount = data?.pages?.[0]?.total;
-  const showingItemCount = geneExpressions.length;
   const sx = { top: 37 }; // https://github.com/mui/material-ui/issues/23090
   return (
     <TableContainer
@@ -60,8 +63,13 @@ const GeneExpressionsTable = ({
           <TableRow>
             <TableCell colSpan={2} sx={{ border: 0 }}>
               <Typography variant="caption">
-                Showing {showingItemCount} of {totalItemCount} items
+                Showing {showingItemCount} of {totalItemCount} items{" "}
               </Typography>
+              {activeTab === "anomaly" && (
+                <Typography variant="caption">
+                  {" (Isolation Forest score < - 0.1)"}
+                </Typography>
+              )}
             </TableCell>
             <TableCell align="center" colSpan={3} sx={{ mr: 3 }}>
               Experiment
@@ -70,7 +78,7 @@ const GeneExpressionsTable = ({
             <TableCell align="center" colSpan={3}>
               Control
             </TableCell>
-            <TableCell sx={{ border: 0 }} />
+            <TableCell sx={{ border: 0 }} colSpan={2} />
           </TableRow>
           <TableRow>
             <TableCell sx={sx}>Gene</TableCell>
@@ -94,17 +102,26 @@ const GeneExpressionsTable = ({
             <TableCell sx={sx} align="right">
               Rep 3
             </TableCell>
+            {activeTab === "anomaly" && (
+              <TableCell sx={sx} align="right">
+                Score
+              </TableCell>
+            )}
             <TableCell sx={sx} />
           </TableRow>
         </TableHead>
 
         <TableBody>
           {rows.map((row) => (
-            <GeneExpressionsTableRow key={row.gene} row={row} />
+            <GeneExpressionsTableRow
+              key={row.gene}
+              row={row}
+              activeTab={activeTab}
+            />
           ))}
         </TableBody>
       </Table>
-      {isFetching && (
+      {isLoading && (
         <Stack justifyContent="center" alignItems="center" py={8}>
           <CircularProgress size={48} />
         </Stack>

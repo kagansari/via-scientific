@@ -19,12 +19,19 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { GeneExpression, useGeneExpressionAnalysis } from "../utils/api";
 
-const nf = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 });
+const nf = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
 type GeneExpressionsTableRowProps = {
   row: GeneExpression;
+  activeTab?: "all" | "anomaly";
 };
-const GeneExpressionsTableRow = ({ row }: GeneExpressionsTableRowProps) => {
+const GeneExpressionsTableRow = ({
+  row,
+  activeTab,
+}: GeneExpressionsTableRowProps) => {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -34,12 +41,16 @@ const GeneExpressionsTableRow = ({ row }: GeneExpressionsTableRowProps) => {
         </TableCell>
         <TableCell
           sx={{
-            maxWidth: 200,
             overflow: "hidden",
             textOverflow: "ellipsis",
+            maxWidth: 200,
           }}
         >
-          <Tooltip title={row.sampleNames.join(", ")} placement="top-start">
+          <Tooltip
+            title={row.sampleNames.join(", ")}
+            placement="top-start"
+            sx={{ maxWidth: 200 }}
+          >
             <span>{row.sampleNames.join(", ")}</span>
           </Tooltip>
         </TableCell>
@@ -62,6 +73,10 @@ const GeneExpressionsTableRow = ({ row }: GeneExpressionsTableRowProps) => {
         <TableCell align="right">
           {nf.format(row.expressionValues.controlRep3)}
         </TableCell>
+        {activeTab === "anomaly" && (
+          <TableCell align="right">{nf.format(row.score || 0)}</TableCell>
+        )}
+
         <TableCell align="right">
           <Button
             variant="text"

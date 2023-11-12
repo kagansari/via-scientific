@@ -21,6 +21,11 @@ cd frontend
 cp .env.example .env.local
 npm run dev
 
+cd ml
+source ./env/bin/activate
+pip install -r requirements.txt
+python App.py
+
 ```
 
 ## Deployment

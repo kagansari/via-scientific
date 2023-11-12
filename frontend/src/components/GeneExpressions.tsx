@@ -2,12 +2,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Box,
-  CircularProgress,
   Container,
   IconButton,
   InputAdornment,
   Paper,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -17,20 +18,40 @@ import { useState } from "react";
 import logo from "../assets/logo.svg";
 import useDebounce from "../utils/useDebounce";
 
-import { useGeneExpressions, useSeedSampleData } from "../utils/api";
-import GeneExpressionsTable from "./GeneExpressionsTable";
 import { GitHub } from "@mui/icons-material";
+import {
+  useAnomalyDetection,
+  useGeneExpressions,
+  useSeedSampleData,
+} from "../utils/api";
+import GeneExpressionsTable from "./GeneExpressionsTable";
 
 export default function Content() {
+  const [activeTab, setActiveTab] = useState<"all" | "anomaly">("all");
+
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  const geneExpressionsQuery = useGeneExpressions({
+  const allDataQuery = useGeneExpressions({
     search: debouncedSearchQuery,
   });
-  const { isLoading, data, geneExpressions } = geneExpressionsQuery;
+  const anomalyDataQuery = useAnomalyDetection({
+    enabled: activeTab === "anomaly",
+  });
+
+  const totalItemCount =
+    activeTab === "all"
+      ? allDataQuery.data?.pages?.[0]?.total
+      : anomalyDataQuery.data?.length;
+
+  const geneExpressions =
+    activeTab === "all"
+      ? allDataQuery.data?.pages.flatMap(({ items }) => items)
+      : anomalyDataQuery.data;
+
+  const isLoading = allDataQuery.isFetching || anomalyDataQuery.isLoading;
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -44,6 +65,7 @@ export default function Content() {
             <TextField
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              disabled={activeTab === "anomaly"}
               variant="standard"
               label="Gene"
               sx={{ minWidth: 250 }}
@@ -76,17 +98,22 @@ export default function Content() {
           overflow: "hidden",
         }}
       >
-        {isLoading && (
-          <Stack justifyContent="center" alignItems="center" py={8}>
-            <CircularProgress size={48} />
-          </Stack>
-        )}
-        {data && (
-          <GeneExpressionsTable
-            rows={geneExpressions}
-            geneExpressionsQuery={geneExpressionsQuery}
-          />
-        )}
+        <Tabs value={activeTab} onChange={(_e, value) => setActiveTab(value)}>
+          <Tab value="all" label="All Data" />
+          <Tab value="anomaly" label="Anomaly Detection" />
+        </Tabs>
+        <GeneExpressionsTable
+          rows={geneExpressions || []}
+          showingItemCount={geneExpressions?.length || 0}
+          totalItemCount={totalItemCount || 0}
+          isLoading={isLoading}
+          onScrollEnd={() => {
+            if (activeTab === "all") {
+              allDataQuery.fetchNextPage();
+            }
+          }}
+          activeTab={activeTab}
+        />
       </Paper>
     </Container>
   );

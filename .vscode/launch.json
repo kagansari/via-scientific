@@ -15,6 +15,14 @@
     {
       "type": "node-terminal",
       "request": "launch",
+      "name": "ML Dev",
+      "command": "./venv/bin/python App.py",
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}/ml"
+    },
+    {
+      "type": "node-terminal",
+      "request": "launch",
       "name": "FE Dev",
       "command": "npm run dev",
       "skipFiles": ["<node_internals>/**"],
