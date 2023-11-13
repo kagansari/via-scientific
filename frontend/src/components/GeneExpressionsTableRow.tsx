@@ -89,7 +89,7 @@ const GeneExpressionsTableRow = ({
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell sx={{ p: 0 }} colSpan={10}>
+        <TableCell sx={{ p: 0 }} colSpan={11}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ px: 3, py: 1, background: "white" }}>
               <GeneExpressionAnalysisContent row={row} />

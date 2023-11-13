@@ -11,7 +11,7 @@ const API_URL =
   import.meta.env.VITE_API_URL || "https://demo.kagansari.com/api";
 
 const ML_API_URL =
-  import.meta.env.VITE_ML_API_URL || "https://demo.kagansari.com/api";
+  import.meta.env.VITE_ML_API_URL || "https://demo.kagansari.com/ml-api";
 
 export class GeneExpressionValues {
   experRep1!: number;

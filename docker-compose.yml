@@ -2,15 +2,23 @@ version: "3.8"
 
 services:
   backend:
-    image: kaganalisari/via-scientific-backend:0.0.2
+    image: kaganalisari/via-scientific-backend:0.0.3
     restart: always
     ports:
       - 3000:3000
     environment:
       MONGO_URL: mongodb://mongo:27017/via-scientific
 
+  backend_flask:
+    image: kaganalisari/via-scientific-ml:0.0.3
+    restart: always
+    ports:
+      - 8000:8000
+    environment:
+      MONGO_URL: mongodb://mongo:27017/via-scientific
+
   frontend:
-    image: kaganalisari/via-scientific-frontend:0.0.2
+    image: kaganalisari/via-scientific-frontend:0.0.3
     ports:
       - 3001:3001
 

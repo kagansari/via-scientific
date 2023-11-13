@@ -32,13 +32,15 @@ python App.py
 
 ```bash
 # Build docker images
-docker build -f Dockerfile.backend -t via-scientific-backend:0.0.2 -t kaganalisari/via-scientific-backend:0.0.2 --platform linux/amd64 .
-# Update VITE_API_URL in "frontend/.env.local" if backend is not served from localhost
-docker build -f Dockerfile.frontend -t via-scientific-frontend:0.0.2 -t kaganalisari/via-scientific-frontend:0.0.2 --platform linux/amd64 .
+docker build -f Dockerfile.backend -t via-scientific-backend:0.0.3 -t kaganalisari/via-scientific-backend:0.0.3 --platform linux/amd64 .
+# Update VITE_API_URL and VITE_ML_API_URL in "frontend/.env.local" if backend is not served from localhost
+docker build -f Dockerfile.frontend -t via-scientific-frontend:0.0.3 -t kaganalisari/via-scientific-frontend:0.0.3 --platform linux/amd64 .
+docker build -f Dockerfile.ml -t via-scientific-ml:0.0.3 -t kaganalisari/via-scientific-ml:0.0.3 --platform linux/amd64 .
 
 # Push to dockerhub
-docker push kaganalisari/via-scientific-backend:0.0.2
-docker push kaganalisari/via-scientific-frontend:0.0.2
+docker push kaganalisari/via-scientific-backend:0.0.3
+docker push kaganalisari/via-scientific-frontend:0.0.3
+docker push kaganalisari/via-scientific-ml:0.0.3
 
 # Or in order to use local images, replace kaganalisari/via-scientific... with via-scientific...
 
